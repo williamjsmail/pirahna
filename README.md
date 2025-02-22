@@ -1,4 +1,4 @@
-# Piranha
+# Piranha (Beta!!)
 
 ## Overview
 The **APT Threat Correlation Report Generator** is a cybersecurity tool designed to analyze **MITRE ATT&CK techniques** and correlate them with relevant **Indicators of Compromise (IOCs)**. The tool provides cybersecurity analysts with actionable intelligence by **extracting, filtering, and exporting APT techniques and related data into Excel reports.**
@@ -10,6 +10,9 @@ The **APT Threat Correlation Report Generator** is a cybersecurity tool designed
 - **Provides real-time logging** to track tool execution and errors (`logs/APT_Report.log`)
 - **Filters results based on user-selected tactics**
 - **GUI interface with dataset and tactic selection options**
+
+## To Do
+- Add tools to the IOC to IOC_TOOL_MAPPING for true data correlation.
 
 ## Installation
 ### Prerequisites
