@@ -1,9 +1,11 @@
 '''
-Pirahna frontend
+piranha frontend
 '''
+
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import backend
+import logging
 
 apt_groups = {}
 
@@ -28,11 +30,11 @@ TACTIC_DISPLAY_NAMES = list(TACTIC_MAPPING.keys())
 
 
 root = tk.Tk()
-root.title("Pirahna")
+root.title("Piranha")
 root.geometry("950x750")
 
 
-tk.Label(root, text="Pirahna T-Code Mapper", font=("Castellar", 16, "bold")).pack(pady=10)
+tk.Label(root, text="Piranha T-Code Mapper", font=("Castellar", 16, "bold")).pack(pady=10)
 
 
 selection_frame = tk.Frame(root)
@@ -177,11 +179,11 @@ def generate_report():
         "ics": use_ics.get()
     }
 
-    print(f"Selected APTs: {selected_apts}")
-    print(f"Selected Tactics (Human-readable): {selected_display_tactics}")
-    print(f"Converted Tactics (JSON names): {selected_tactics}")
-    print(f"Include T-Code Descriptions: {include_desc}")
-    print(f"Selected Datasets: {selected_datasets}")
+    logging.info(f"Selected APTs: {selected_apts}")
+    logging.info(f"Selected Tactics (Human-readable): {selected_display_tactics}")
+    logging.info(f"Converted Tactics (JSON names): {selected_tactics}")
+    logging.info(f"Include T-Code Descriptions: {include_desc}")
+    logging.info(f"Selected Datasets: {selected_datasets}")
 
     if not selected_apts:
         messagebox.showerror("Error", "Please select at least one APT.")
@@ -198,7 +200,7 @@ def generate_report():
     output_data = backend.get_apt_report(selected_apts, selected_tactics, include_desc, selected_datasets)
 
     if not output_data:
-        print("No data retrieved from backend.")
+        logging.error("No data retrieved from backend.")
         messagebox.showerror("Error", "No data retrieved. Check the JSON file or tactic mappings.")
         return
 
