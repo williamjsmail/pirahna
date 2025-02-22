@@ -1,1 +1,2 @@
+unzip files.zip and run the following command:
 pyinstaller --onefile --windowed --icon=pin.ico --add-data "enterprise-attack.json;." --add-data "mobile-attack.json;." --add-data "ics-attack.json;." pirahna.py
