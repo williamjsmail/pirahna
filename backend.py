@@ -2,11 +2,12 @@ CHRIST_IS_KING = "CHRIST IS KING"
 
 import json
 import os
+import logging
 import pandas as pd
 
 MITRE_JSON_FILE = os.path.join(os.path.dirname(__file__), "enterprise-attack.json")
 
-# Sample T-Code to IOC Mapping
+# T-Code Mapping
 TCODE_IOC_MAPPING = {
     "T1055.011": ['Abnormal Process Injection: T1055.011_CreateRemoteThread', 'Execution via Rundll32.exe'],
     "T1053.005": ['Registry Key: HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\T1053.005', 'Scheduled Task: T1053.005_AutoUpdate'],
@@ -1092,7 +1093,7 @@ TCODE_IOC_MAPPING = {
 }
 
 
-# Sample IOC to Detection Tool Mapping
+# IOC to Detection Tool Mapping to be done
 IOC_TOOL_MAPPING = {
     "Registry Key: HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run": "Sysmon + SIEM",
     "Scheduled Task: AutoUpdate": "Powershell + EDR",
@@ -1101,9 +1102,24 @@ IOC_TOOL_MAPPING = {
 }
 
 
+# Create a logs directory if it doesn’t exist
+if not os.path.exists("logs"):
+    os.makedirs("logs")
+
+#Logging
+log_file = "logs/APT_Report.log"
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler(log_file, mode='w', encoding='utf-8'),
+        logging.StreamHandler()
+    ]
+)
+
+
 
 def load_mitre_data(selected_datasets):
-    """Load MITRE ATT&CK data from selected JSON files and track dataset sources."""
     dataset_files = {
         "enterprise": "enterprise-attack.json",
         "mobile": "mobile-attack.json",
@@ -1117,7 +1133,7 @@ def load_mitre_data(selected_datasets):
         if selected:
             json_path = os.path.join(os.path.dirname(__file__), dataset_files[dataset])
             if os.path.exists(json_path):
-                print(f"Loading {dataset_files[dataset]}")
+                logging.info(f"Loading {dataset_files[dataset]}")
                 with open(json_path, "r", encoding="utf-8") as file:
                     data = json.load(file)
                     for obj in data["objects"]:
@@ -1126,7 +1142,7 @@ def load_mitre_data(selected_datasets):
                             t_code = obj["external_references"][0]["external_id"]
                             dataset_mapping[t_code] = dataset  # Store dataset source for each T-Code
             else:
-                print(f"{dataset_files[dataset]} not found!")
+                logging.error(f"{dataset_files[dataset]} not found!")
 
     return combined_data if combined_data["objects"] else None, dataset_mapping
 
@@ -1143,26 +1159,25 @@ def get_tactics_for_apt(mitre_data, apt_techniques, selected_tactics):
     techniques = {tactic: [] for tactic in selected_tactics}
     tcode_descriptions = {}  # Dictionary to store T-Code descriptions
 
-    print(f"Filtering attack patterns for tactics: {selected_tactics}")
+    logging.info(f"Filtering attack patterns for tactics: {selected_tactics}")
 
     for obj in mitre_data["objects"]:
         if obj["type"] == "attack-pattern" and obj["id"] in apt_techniques:
             if "external_references" in obj and obj["external_references"]:
-                t_code = obj["external_references"][0]["external_id"]  # T-Code (e.g., T1547.001)
-                description = obj.get("description", "No description available.")  # Extract description
+                t_code = obj["external_references"][0]["external_id"]  # T-Code extraction
+                description = obj.get("description", "No description available.")  # Description extraction
 
                 if "kill_chain_phases" in obj:
                     for phase in obj["kill_chain_phases"]:
                         if phase["phase_name"] in selected_tactics:
                             techniques[phase["phase_name"]].append(t_code)
                             tcode_descriptions[t_code] = description
-                            print(f"Matched {phase['phase_name']} - {t_code}")
+                            logging.info(f"Matched {phase['phase_name']} - {t_code}")
 
     return techniques, tcode_descriptions
 
 
 def get_apt_report(selected_apts, selected_tactics, include_desc, selected_datasets):
-    """Generate APT threat correlation report with dataset sources and correct column order."""
     mitre_data, dataset_mapping = load_mitre_data(selected_datasets)
     if not mitre_data:
         return None
@@ -1170,75 +1185,76 @@ def get_apt_report(selected_apts, selected_tactics, include_desc, selected_datas
     apt_groups = get_apt_groups(mitre_data)
     output_data = []
 
-    print(f"Searching for APTs: {selected_apts}")
-    print(f"Filtering by tactics: {selected_tactics}")
-    print(f"Include T-Code Descriptions: {include_desc}")
+    logging.info(f"Searching for APTs: {selected_apts}")
+    logging.info(f"Filtering by tactics: {selected_tactics}")
+    logging.info(f"Include T-Code Descriptions: {include_desc}")
 
     for apt in selected_apts:
         if apt in apt_groups:
             apt_id = apt_groups[apt]
             apt_techniques = get_apt_techniques(mitre_data, apt_id)
 
-            print(f"{apt} (ID: {apt_id}) uses {len(apt_techniques)} techniques.")
+            logging.info(f"{apt} (ID: {apt_id}) uses {len(apt_techniques)} techniques.")
 
             techniques, tcode_descriptions = get_tactics_for_apt(mitre_data, apt_techniques, selected_tactics)
 
             if not any(techniques.values()):
-                print(f"{apt} has no techniques for selected tactics: {selected_tactics}")
-                output_data.append([apt, "No Mapped Techniques", "", "", "", "", ""])
+                logging.warning(f"{apt} has no techniques for selected tactics: {selected_tactics}")
+                no_mapped_row = [apt, "No Mapped Techniques", "", "Unknown Dataset", "", "", ""]  # Ensure 7 columns
+                output_data.append(no_mapped_row)
                 continue
 
             first_row = True
             for category, t_codes in techniques.items():
                 for t_code in t_codes:
-                    dataset_source = dataset_mapping.get(t_code, "Unknown Dataset")  # Fetch dataset source
+                    dataset_source = dataset_mapping.get(t_code, "Unknown Dataset")
                     tcode_description = tcode_descriptions.get(t_code, "No description available.") if include_desc else ""  
-                    iocs = TCODE_IOC_MAPPING.get(t_code, ["No IOCs Found"])  # Fetch IOCs for this T-Code
+                    iocs = TCODE_IOC_MAPPING.get(t_code, ["No IOCs Found"])
 
                     for i, ioc in enumerate(iocs):
-                        detection_tool = IOC_TOOL_MAPPING.get(ioc, "Unknown Tool")  # Fetch Detection Tool
+                        detection_tool = IOC_TOOL_MAPPING.get(ioc, "Unknown Tool")
 
                         row = [
-                            apt if first_row else "",  # APT Name (only on first row)
-                            category,  # MITRE Tactic (Persistence, Execution, etc.)
-                            t_code,  # MITRE T-Code (T1547.001, etc.)
-                            dataset_source,  # Source Dataset (Enterprise, Mobile, ICS)
-                            tcode_description,  # Corrected placement for T-Code Description
-                            ioc,  # Corrected placement for IOC
-                            detection_tool  # Corrected placement for Detection Tool
+                            apt if first_row else "",
+                            category,
+                            t_code,
+                            dataset_source,
+                            tcode_description if include_desc else "",
+                            ioc,
+                            detection_tool
                         ]
                         first_row = False
                         output_data.append(row)
 
     if not output_data:
-        print("No matching results found in MITRE JSON.")
+        logging.warning("No matching results found in MITRE JSON.")
 
     return output_data
 
 
-
-
-
-
-
 def save_to_excel(output_data, file_path, include_desc):
-    """Save the report data to an Excel file with dataset sources."""
     if not output_data:
-        print("No data to save!")
+        logging.warning("No data to save!")
         return
 
-    # Define columns based on user selection
     columns = ["APT", "Category", "T-Code", "Dataset Source", "IOC", "Detection Tool"]
     if include_desc:
-        columns.insert(4, "T-Code Description")  # Add description column if selected
+        columns.insert(4, "T-Code Description")
 
-    df = pd.DataFrame(output_data, columns=columns)
-    
+    expected_columns = len(columns)
+
+   
+    corrected_data = []
+    for row in output_data:
+        if len(row) < expected_columns:
+            row.extend([""] * (expected_columns - len(row))) 
+        elif len(row) > expected_columns:
+            row = row[:expected_columns] 
+        corrected_data.append(row)
+
     try:
-        df.to_excel(file_path, index=False)
-        print(f"Report successfully saved to {file_path}")
+        df = pd.DataFrame(corrected_data, columns=columns)
+        df.to_excel(file_path, index=False, engine='openpyxl')
+        logging.info(f"Report successfully saved to {file_path}")
     except Exception as e:
-        print(f"Error saving report: {e}")
-
-
-
+        logging.error(f"Error saving report: {e}")
