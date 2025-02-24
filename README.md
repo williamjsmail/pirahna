@@ -17,12 +17,12 @@ This tool **automatically analyzes descriptions** of APT tactics and techniques,
 ---
 
 ## Compiling
-**1: Unzip matrices.zip**, move the extracted files into the **piranha** directory
-**2: Install** python requirements
+**1: Unzip matrices.zip**, move the extracted files into the **piranha** directory.
+**2: Install** python requirements.
 ```bash
 pip install -r requirements.txt
 ```
-**3: Compile** using **pyinstaller** from the **piranha directory**
+**3: Compile** using **pyinstaller** from the **piranha** directory.
 ```bash
 pyinstaller --noconsole --icon=.\images\pin.ico --add-data "files;files" --add-data "files/APT;files/APT" --add-data "enterprise-attack.json;." --add-data "mobile-attack.json;." --add-data "ics-attack.json;." piranha.py
 ```
