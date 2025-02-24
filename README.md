@@ -30,3 +30,5 @@ pip install -r requirements.txt
 ```bash
 pyinstaller --noconsole --icon=.\images\pin.ico --add-data "files;files" --add-data "files/APT;files/APT" --add-data "enterprise-attack.json;." --add-data "mobile-attack.json;." --add-data "ics-attack.json;." piranha.py
 ```
+
+![plot](./images/usage.png)
