@@ -1,68 +1,51 @@
-# Piranha (Beta!!)
+PIRANHA - APT Threat Intelligence & IOC Correlation Tool
+Overview
+PIRANHA is a cyber threat intelligence tool designed to map MITRE ATT&CK techniques used by Advanced Persistent Threats (APTs) to relevant Indicators of Compromise (IOCs). This tool automatically analyzes descriptions of APT tactics and techniques, extracts meaningful keywords, and generates custom threat reports with detection tools and IOCs.
 
-## Overview
-The **APT Threat Correlation Report Generator** is a cybersecurity tool designed to analyze **MITRE ATT&CK techniques** and correlate them with relevant **Indicators of Compromise (IOCs)**. The tool provides cybersecurity analysts with actionable intelligence by **extracting, filtering, and exporting APT techniques and related data into Excel reports.**
+🚀 Features
+✅ APT Technique Mapping - Retrieve techniques used by APT groups from MITRE ATT&CK datasets.
+✅ APT-Specific Descriptions - Uses APT-specific JSON data for more accurate descriptions.
+✅ Keyword-Based IOC Mapping - Maps keywords in descriptions to pre-defined IOCs.
+✅ Multi-Dataset Support - Supports Enterprise, Mobile, and ICS ATT&CK datasets.
+✅ Dynamic Keyword Management - Add new keywords, IOCs, and detection tools manually.
+✅ Export Reports - Generate Excel reports with categorized threat intelligence data.
+✅ Fully Scrollable UI - Navigate easily through large datasets with a scrollable interface.
 
-## Features
-- **Supports Enterprise, Mobile, and ICS ATT&CK datasets**
-- **Correlates APT techniques with relevant IOCs** (registry keys, process injections, network indicators, etc.)
-- **Exports reports in Excel format (`.xlsx`)** for easy analysis
-- **Provides real-time logging** to track tool execution and errors (`logs/APT_Report.log`)
-- **Filters results based on user-selected tactics**
-- **GUI interface with dataset and tactic selection options**
+📁 Installation
+1. Clone the Repository
+bash
+Copy
+Edit
+git clone https://github.com/your-repo/PIRANHA.git
+cd PIRANHA
+2. Install Dependencies
+Ensure you have Python 3.8+ installed, then run:
 
-## To Do
-- Add tools to the IOC to IOC_TOOL_MAPPING for true data correlation.
+bash
+Copy
+Edit
+pip install -r requirements.txt
+3. Prepare Required Files
+Place MITRE ATT&CK JSON files in the files/ directory:
+enterprise-attack.json
+mobile-attack.json
+ics-attack.json
+Place APT-specific JSON files inside files/APT/
+Place IOC keyword mappings inside files/TCODE_IOC_MAPPING.json
+4. Run PIRANHA
+bash
+Copy
+Edit
+python piranha.py
+📊 How to Use PIRANHA
+1️⃣ Select APT Groups - Choose one or more APTs from the list.
+2️⃣ Select Tactics - Choose MITRE ATT&CK tactics (e.g., Persistence, Defense Evasion).
+3️⃣ Select Dataset(s) - Pick Enterprise, Mobile, or ICS ATT&CK datasets.
+4️⃣ Enable/Disable Descriptions - Toggle APT-specific technique descriptions.
+5️⃣ Generate Report - Click “Generate Report” to display results.
+6️⃣ Export to Excel - Click “Export to Excel” to save the report.
 
-## Installation
-### Prerequisites
-Ensure you have **Python 3.12 or later** installed. The tool also requires the following dependencies:
-
-```sh
-pip install pandas openpyxl tkinter
-```
-
-### Running the Tool
-1. Clone or download the repository.
-2. Place the **MITRE ATT&CK JSON datasets** (`enterprise-attack.json`, `mobile-attack.json`, `ics-attack.json`) in the tool's directory.
-3. Run the tool:
-   ```sh
-   python piranha.py
-   ```
-
-## Usage
-1. **Select the MITRE ATT&CK dataset(s)** you want to analyze.
-2. **Choose the APT groups** from the available list.
-3. **Select specific tactics** (e.g., Execution, Privilege Escalation, Persistence).
-4. **Click "Generate Report"** to process the data.
-5. **Export results to an Excel file** for further analysis.
-
-## Logging
-All actions and errors are logged in:
-```sh
-logs/APT_Report.log
-```
-This helps in debugging and tracking execution history.
-
-## Compiling to `.exe`
-To create a standalone executable:
-```sh
-pyinstaller --onefile --windowed --icon=images/pin.ico --add-data "enterprise-attack.json;." --add-data "mobile-attack.json;." --add-data "ics-attack.json;." pirahna.py
-```
-This will generate `piranha.exe` in the `dist/` folder.
-
-## Troubleshooting
-### **Excel Export Fails in Compiled Version**
-- Ensure `openpyxl` is installed (`pip install openpyxl`).
-- Compile using `--hidden-import=openpyxl`.
-
-### **No Data is Displayed in the Report**
-- Verify that the MITRE JSON files are correctly placed in the same directory as the script.
-- Check the `logs/APT_Report.log` file for any errors.
-
-## License
-This tool is distributed under the **MIT License**.
-
-## Contributors
-- **William Smail** - Lead Developer
-
+🛠 Managing Keywords & IOCs
+Click "Manage Keywords" to add custom keywords and IOCs.
+Ensure uniqueness - The tool prevents duplicate keywords.
+Edits are persistent - Changes are saved in KEYWORD_IOC_MAPPING.json.
