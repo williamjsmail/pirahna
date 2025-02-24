@@ -41,7 +41,7 @@ move .\matrices\matrices* .
 ```bash
 pip install -r requirements.txt
 ```
-**3: Use **python** to run piranha.py.
+**3: Use **python** to run **piranha.py**.
 ```bash
 python piranha.py
 ```
