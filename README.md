@@ -13,7 +13,6 @@ This tool **automatically analyzes descriptions** of APT tactics and techniques,
 **Multi-Dataset Support** - Supports **Enterprise, Mobile, and ICS** ATT&CK datasets.  
 **Dynamic Keyword Management** - Add new **keywords, IOCs, and detection tools** manually.  
 **Export Reports** - Generate **Excel reports** with categorized threat intelligence data.  
-**Fully Scrollable UI** - Navigate easily through large datasets with a scrollable interface.  
 
 ---
 
