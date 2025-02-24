@@ -2,7 +2,6 @@ pandas
 openpyxl
 tk
 pyinstaller
-json
 logging
 re
 os
