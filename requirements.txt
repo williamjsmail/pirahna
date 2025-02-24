@@ -3,7 +3,3 @@ openpyxl
 tk
 pyinstaller
 logging
-re
-os
-logging
-collections
