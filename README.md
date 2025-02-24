@@ -31,4 +31,19 @@ pip install -r requirements.txt
 pyinstaller --noconsole --icon=.\images\pin.ico --add-data "files;files" --add-data "files/APT;files/APT" --add-data "enterprise-attack.json;." --add-data "mobile-attack.json;." --add-data "ics-attack.json;." piranha.py
 ```
 
+## **Command Line**
+****1: Unzip matrices.zip**, move the extracted files into the **piranha** directory.
+```bash
+powershell.exe -c "Expand-Archive -Force matrices.zip"
+move .\matrices\matrices* .
+```
+**2: Install** python requirements.
+```bash
+pip install -r requirements.txt
+```
+**3: Use **python** to run piranha.py.
+```bash
+python piranha.py
+```
+
 ![plot](./images/usage.png)
