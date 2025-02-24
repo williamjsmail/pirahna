@@ -16,7 +16,7 @@ This tool **automatically analyzes descriptions** of APT tactics and techniques,
 
 ---
 
-## Compiling
+## **Compiling**
 **1: Unzip matrices.zip**, move the extracted files into the **piranha** directory.
 **2: Install** python requirements.
 ```bash
