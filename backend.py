@@ -134,7 +134,7 @@ def get_apt_report(selected_apts, selected_tactics, include_desc, selected_datas
     for apt in selected_apts:
         apt_data = load_apt_json(apt, selected_datasets)
         if not apt_data:
-            logging.warning(f"⚠️ No JSON file found for {apt}, skipping.")
+            logging.warning(f"No JSON file found for {apt}, skipping.")
             continue
 
         apt_id = apt_groups.get(apt)
@@ -156,7 +156,7 @@ def get_apt_report(selected_apts, selected_tactics, include_desc, selected_datas
                     "No description available."
                 ) if include_desc else ""
 
-                # **Match IOCs Based on Keywords in Description**
+                # Match IOCs Based on Keywords in Description
                 matched_iocs = []
                 matched_tools = []
 
@@ -168,10 +168,10 @@ def get_apt_report(selected_apts, selected_tactics, include_desc, selected_datas
                         else:
                             matched_iocs.append(ioc_data["ioc"])  # Add single IOC
 
-                        # 🔹 Ensure tools are also correctly added
+                        # Ensure tools are also correctly added
                         matched_tools.extend(ioc_data["tools"])
 
-                # **Ensure At Least One IOC Exists**
+                # Ensure At Least One IOC Exists
                 ioc_string = ", ".join(matched_iocs) if matched_iocs else "No IOCs Found"
                 tool_string = ", ".join(set(matched_tools)) if matched_tools else "Unknown Tool"
 
