@@ -17,10 +17,3 @@ This tool **automatically analyzes descriptions** of APT tactics and techniques,
 
 ---
 
-## **📁 Installation**
-
-### **1. Clone the Repository**
-```bash
-git clone https://github.com/your-repo/PIRANHA.git
-cd PIRANHA
-'''
