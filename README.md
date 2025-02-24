@@ -6,14 +6,14 @@ This tool **automatically analyzes descriptions** of APT tactics and techniques,
 
 ---
 
-## **🚀 Features**
-✅ **APT Technique Mapping** - Retrieve techniques used by APT groups from **MITRE ATT&CK datasets**.  
-✅ **APT-Specific Descriptions** - Uses **APT-specific JSON data** for more accurate descriptions.  
-✅ **Keyword-Based IOC Mapping** - Maps keywords in descriptions to pre-defined IOCs.  
-✅ **Multi-Dataset Support** - Supports **Enterprise, Mobile, and ICS** ATT&CK datasets.  
-✅ **Dynamic Keyword Management** - Add new **keywords, IOCs, and detection tools** manually.  
-✅ **Export Reports** - Generate **Excel reports** with categorized threat intelligence data.  
-✅ **Fully Scrollable UI** - Navigate easily through large datasets with a scrollable interface.  
+## **Features**
+**APT Technique Mapping** - Retrieve techniques used by APT groups from **MITRE ATT&CK datasets**.  
+**APT-Specific Descriptions** - Uses **APT-specific JSON data** for more accurate descriptions.  
+**Keyword-Based IOC Mapping** - Maps keywords in descriptions to pre-defined IOCs.  
+**Multi-Dataset Support** - Supports **Enterprise, Mobile, and ICS** ATT&CK datasets.  
+**Dynamic Keyword Management** - Add new **keywords, IOCs, and detection tools** manually.  
+**Export Reports** - Generate **Excel reports** with categorized threat intelligence data.  
+**Fully Scrollable UI** - Navigate easily through large datasets with a scrollable interface.  
 
 ---
 
